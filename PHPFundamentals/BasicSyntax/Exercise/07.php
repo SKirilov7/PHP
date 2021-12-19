@@ -1,70 +1,56 @@
 <?php
-$Money = 0;
-$priceCoke = 1;
-$priceNuts = 2;
-$priceWater = 0.7;
-$priceCrisps = 1.5;
-$priceSoda = 0.8;
+$balance = 0;
 
-$input = readline();
-while ($input != 'Start'){
-    $currentMoney = floatval($input);
-    if ($currentMoney === 0.5 || $currentMoney === 1.0 || $currentMoney === 2.0 || $currentMoney === 0.1 || $currentMoney === 0.2){
-        $Money += round($currentMoney,2);
-    } else {
-        echo "Cannot accept $currentMoney".PHP_EOL;
-    };
-    $input = readline();
+$currentCommand = readline();
+
+while ($currentCommand !== 'Start'){
+    $currentCommand = round(floatval($currentCommand), 2);
+    if ($currentCommand !== 0.1 && $currentCommand !== 0.2 && $currentCommand !== 0.5 && $currentCommand != 1.0 && $currentCommand != 2.0){
+        echo "Cannot accept $currentCommand".PHP_EOL;
+        $currentCommand = readline();
+        continue;
+    }
+    $balance += $currentCommand;
+    $currentCommand = readline();
 };
 
-$inputProducts = readline();
-while ($inputProducts != 'End'){
-    switch ($inputProducts){
-        case 'Coke':
-            if ($Money >= $priceCoke){
-                echo 'Purchased coke'.PHP_EOL;
-                $Money -= $priceCoke;
-            } else {
-                echo 'Sorry, not enough money'.PHP_EOL;
-            };
-            break;
+$currentCommand = readline();
+
+while ($currentCommand !== 'End'){
+    $currProductPrice = 0;
+    $isNotValidProduct = false;
+    switch ($currentCommand){
         case 'Nuts':
-            if ($Money >= $priceNuts){
-                echo 'Purchased nuts'.PHP_EOL;
-                $Money -= $priceNuts;
-            } else {
-                echo 'Sorry, not enough money'.PHP_EOL;
-            };
+            $currProductPrice = round(2.0,2);
             break;
         case 'Water':
-            if ($Money >= $priceWater){
-                echo 'Purchased water'.PHP_EOL;
-                $Money -= $priceWater;
-            } else {
-                echo 'Sorry, not enough money'.PHP_EOL;
-            };
-            break;
-        case 'Soda':
-            if ($Money >= $priceSoda){
-                echo 'Purchased soda'.PHP_EOL;
-                $Money -= $priceSoda;
-            } else {
-                echo 'Sorry, not enough money'.PHP_EOL;
-            };
+            $currProductPrice = round(0.7,2);
             break;
         case 'Crisps':
-            if ($Money >= $priceCrisps){
-                echo 'Purchased crisps'.PHP_EOL;
-                $Money -= $priceCrisps;
-            } else {
-                echo 'Sorry, not enough money'.PHP_EOL;
-            };
+            $currProductPrice = round(1.5, 2);
+            break;
+        case 'Soda':
+            $currProductPrice = round(0.8, 2);
+            break;
+        case 'Coke':
+            $currProductPrice = round(1.0, 2);
             break;
         default:
-            echo 'Invalid product';
+            echo "Invalid product".PHP_EOL;
+            $isNotValidProduct = true;
             break;
     };
-    $inputProducts = readline();
+
+    if (!$isNotValidProduct && $balance >= $currProductPrice){
+        $productName = strtolower($currentCommand);
+        echo "Purchased $productName".PHP_EOL;
+        $balance -= $currProductPrice;
+    } else if (!$isNotValidProduct || $balance < $currProductPrice){
+        echo 'Sorry, not enough money'.PHP_EOL;
+    };
+    $currentCommand = readline();
+
+
 };
 
-printf('Change: %.2f',$Money);
+printf("Change: %.2f", $balance);

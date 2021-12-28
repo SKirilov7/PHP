@@ -1,33 +1,30 @@
 <?php
 function switchTeams($arrayUsers, $switchSide, $user)
 {
-    $isSuchUser = false;
-    foreach ($arrayUsers as $side => $users) {
-        if (in_array($user, $users) && $side !== $switchSide) {
-            $isSuchUser = true;
-            $index = array_search($user, $users);
-            array_splice($arrayUsers[$side], $index, 1);
-            $arrayUsers[$switchSide][] = $user;
-            echo "$user joins the $switchSide side!" . PHP_EOL;
-            break;
-        } else if (in_array($user, $users) && $side == $switchSide) {
-            $isSuchUser = true;
-            break;
-        }
+    $isSuchUserAndSide = checkIfUserExists($arrayUsers, $user);
+    if ($isSuchUserAndSide) {
+        $index = array_search($user, $arrayUsers[$isSuchUserAndSide]);
+        array_splice($arrayUsers[$isSuchUserAndSide], $index, 1);
+        $arrayUsers[$switchSide][] = $user;
+        echo "$user joins the $switchSide side!" . PHP_EOL;
+
+    } else if ($isSuchUserAndSide == $switchSide) {
+        $isSuchUser = true;
     }
-    if (!$isSuchUser) {
+    if (!$isSuchUserAndSide) {
         $arrayUsers[$switchSide][] = $user;
         echo "$user joins the $switchSide side!" . PHP_EOL;
     }
     return $arrayUsers;
 }
 
+
 function checkIfUserExists($array, $user)
 {
     $isExisting = false;
     foreach ($array as $side => $users) {
         if (in_array($user, $users)) {
-            $isExisting = true;
+            $isExisting = $side;
             break;
         }
     }
